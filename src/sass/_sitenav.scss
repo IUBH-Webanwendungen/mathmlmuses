@@ -7,6 +7,11 @@
 // stylelint-disable selector-max-type
 .tdbc-sitenav {
   background-color: tdbc-color("primary");
+  li::after{
+    content: ' •';
+    padding-left: 0.2em;
+  }
+  li:last-child::after { content:''}
 
   &__container,
   &__navlist {
@@ -32,6 +37,11 @@
   &,
   a:not(.tdbc-button) {
     color: tdbc-color("light");
+    text-decoration: none;
+  }
+  a:not(.tdbc-button):hover {
+    color: tdbc-color("light");
+    text-decoration: underline;
   }
 
   a:not(.tdbc-button):focus {

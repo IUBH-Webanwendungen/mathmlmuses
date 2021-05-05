@@ -26,10 +26,10 @@ Visit [11ty-netlify-jumpstart.netlify.app](https://11ty-netlify-jumpstart.netlif
 1. Review the [11ty documentation](https://11ty.dev) to more deeply apply customizations, including
    adding custom data sources and reviewing what template languages are available.
 
-### Is Netlify hosting required?
+### Deployed on Netlify
 
-It's not required, but highly recommended, and is also how the build process is setup to run
-against.
+[![Netlify Status](https://api.netlify.com/api/v1/badges/10df9587-28e1-41dd-bad0-e13d582fc32d/deploy-status)](https://app.netlify.com/sites/mathmlmuses/deploys)
+
 
 ## Development Scripts
 

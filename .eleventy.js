@@ -20,6 +20,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("./src/favicon.png");
 
   eleventyConfig.addShortcode("year", () => `${new Date().getFullYear()}`);
+  eleventyConfig.addShortcode("today", () => `${(new Date() +"").replace(/ [0-9][0-9]:.*/,"")}`);
   eleventyConfig.addShortcode("packageVersion", () => `v${packageVersion}`);
 
   eleventyConfig.addFilter("slug", (str) => {

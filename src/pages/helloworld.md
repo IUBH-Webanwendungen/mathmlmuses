@@ -1,5 +1,5 @@
 ---
-title: "Hello World"
+title: "Hello World 3"
 description: 'A demo of the "Page" template and kitchen sink sample of styled elements.'
 eleventyExcludeFromCollections: true
 ---
@@ -7,6 +7,8 @@ eleventyExcludeFromCollections: true
 > Credit for the kitchen sink elements to the ["Just the Docs"](https://github.com/pmarsceill/just-the-docs) project by [pmarsceill](https://github.com/pmarsceill).
 
 # Header 1
+
+We just made a modification.
 
 This is a normal paragraph following a header. GitHub is a code hosting platform for version control and collaboration. It lets you and others work together on projects from anywhere.
 

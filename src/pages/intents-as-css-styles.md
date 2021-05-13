@@ -59,10 +59,41 @@ is rather moderate and he holds a table of symbols at the start of his works any
 Thus our author realizes a stylesheet for its complete course so that
 it is enough to write (with some discipline) presentation and have them speak-aloud-pronounceable.
 
-### Disambiguation through Structure
+### Disambiguation through Structure (broke)
 
-TODO: P(A|B) vs {x|x>3} because of checking the cascade of `<mo>` by a CSS selector
-which checks the exact content of the `mo` elements.
+Assuming the ```::text```-pseudoclass existed:
+
+CSS:
+
+```css
+mrow > mo::text("P") mo::text("(") * mo::text("|") {
+intent: "$1 conditional to $2" 
+}
+mrow > mo::text("{") * mo::text("|") {
+    intent: "$1 such that $2"
+}
+```
+
+HTML:
+
+```xml
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>P</mi>
+    <mo>(</mo>
+    <mi>A</mi>
+    <mo>|</mo>
+    <mi>B</mi>
+    <mo>)</mo>
+  </mrow>
+</math>
+```
+
+Unfortunately the ``::text()`` selector does not exist in CSS; 
+it  seems that [even ``::contains`` got retracted](https://www.w3.org/TR/selectors-3/#content-selectors)).
+XPath could be used to specify this in an XSLT or JavaScript selection mechanism, but 
+precedence and containment need to be considered, coming very close to a presentation to content processor.
+
 
 ### Scoping by classname
 

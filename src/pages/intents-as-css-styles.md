@@ -31,16 +31,19 @@ a _such that_ bloats the source.
 
 ## What if... 
 
-... the `intent` attribute value could be specified by using a style
+... the `intent` attribute value could be specified by using styles
 of the cascading stylesheet. Let us suppose, for example, that a
-`mathintent` property value of CSS exists.
+`mathintent-<intent-pattern>` property value of CSS exists for each
+thinkable intent-pattern (that's the _known notation_ in
+[the intent values table](https://docs.google.com/spreadsheets/d/e/2PACX-1vTD9H2hQjgXXbkZrqkJQbTawwwrvlDfrTlVZRY8iF49jkJZ2rYfQX4QK39GlLhIuK0Fhhwkm_NnAcqm/pubhtml)).
+
 
 This means that this property can be put inside a rule within the web-page body 
 or within a stylesheet and indicate:
 
-- an intent value for every occurrence of a particular MathML-element 
-- an intent value for every leaf of a particular cascade of MathML-element (including pseudo-class fun such as first and last)
-- an intent value for such but within a particular class
+- an intent value for every occurrence of a particular MathML-element's pattern (as is done in the list) 
+- an intent value for such but within a particular class (e.g. an indication that a given expression is in probability-theory,
+  e.g. <nobr>P(A|B)</nobr> or that other is a set description as in <nobr>{x | x² > 1}</nobr>.
 
 And it also probably means that the best practice where CSS has been applied to accessibility
 such as the reading-mode of browsers, the high-contrast skin-change, or user-adjustments can
@@ -52,58 +55,86 @@ all be made too.
 
 ### Translating
 
-An author wishes to write down and make effective in his web-publications the 
-translations of the intents of his notations. His usage of mathematical symbols
-is rather moderate and he holds a table of symbols at the start of his works anyways.
+An author wishes to write down and make effective in his web-publications in, say, German.
+For this, he wishes to apply translations of the intents for his notations. His usage of mathematical symbols
+is rather moderate and he holds a table of symbols at the introduction of his web-publications anyways.
 
-Thus our author realizes a stylesheet for its complete course so that
-it is enough to write (with some discipline) presentation and have them speak-aloud-pronounceable.
+Thus our author realizes a stylesheet for its his web-publication so that
+it is enough to write presentation MathML and have them speak-aloud-pronounceable in German.
 
-### Disambiguation through Structure (broke)
-
-Assuming the ```::text```-pseudoclass existed:
-
-CSS:
+A slight extract could be the following, where the suffix after ``mathintent`` should be read as
+a pattern of MathML element names and character names either as entity or unicode names.
 
 ```css
-mrow > mo::text("P") mo::text("(") * mo::text("|") {
-intent: "$1 conditional to $2" 
-}
-mrow > mo::text("{") * mo::text("|") {
-    intent: "$1 such that $2"
-}
+  *[lang="de"] {
+      mathintent-mo-equal: "$1 gleich $2";
+      mathintent-mo-lt:    "$1 kleiner als $2";
+      mathintent-mi-cm:    "Zentimeter";
+  }
 ```
 
-HTML:
+### Mark context to choose intent
+
+While the list of intents provides an intent for many symbol patterns, there may be a lot of ambiguity left.
+As an example ``<mo>|</mo>`` could be automatically endowed with:
+
+- the intent ``such-that`` with a speech hint ``$1 such that $2``
+- the intent ``conditional-probability`` with a speech hint ``$1 given $2``
+
+Supposing that the following stylesheet can be written: 
+```css
+  .conditional-prob {
+    mathintent-mo-mid: "$1 given $2";
+  }
+  .set {
+    mathintent-mo-mid: "$1 given $2";
+  }
+```
+Note that `mid` is the name of the entity
+of the pipe character, it could have been `DIVIDES` (the unicode name), `VerticalBar` or...
+The above stylesheet could then be used in the following expressions:
+ 
 
 ```xml
-<math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
-    <mi>P</mi>
+<math>
+  <mrow class="conditional-prob">
+    <mo>P</mo>
     <mo>(</mo>
     <mi>A</mi>
     <mo>|</mo>
     <mi>B</mi>
     <mo>)</mo>
   </mrow>
+  <mo>=</mo>
+  <mrow class="set">
+    <mo>P</mo>
+    <mo>(</mo>
+    <mfenced open="{" close="}">
+      <mrow>
+        <mi>x</mi>
+        <mo>|</mo>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+        <mo>&gt;</mo>
+        <mn>1</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
 </math>
 ```
-
-Unfortunately the ``::text()`` selector does not exist in CSS; 
-it  seems that [even ``::contains`` got retracted](https://www.w3.org/TR/selectors-3/#content-selectors)).
-XPath could be used to specify this in an XSLT or JavaScript selection mechanism, but 
-precedence and containment need to be considered, coming very close to a presentation to content processor.
 
 
 ### Scoping by classname
 
 A magazine or conference web-site presents the abstracts of the various contributions.
-Some abstracts are from different communities so that, say, the _e_ symbol should either
-be pronounced as the Euler or Napier constant. 
+Some abstracts are from different communities so that, say, the expression _A~B_ should either
+be pronounced as _A is congruent to B_ or as _A follows the distribution B_. 
 
-Because each abstract can be tagged with a classname denoting the "community" it belongs
+Because each abstract can be tagged with a classname denoting the "area" it belongs
 to. The different intents are inherited without the editor actually modifying the
-MathML expressions.
+MathML expressions of each of the abstracts.
 
 ---
 
@@ -126,13 +157,14 @@ help the users of accessibility devices obtain a more relevant experience. The c
 be in the browser level, at the level of a classroom, at the level of an author, or
 even at the software level.
 
-And if CSS is still not the riches selection language... there's a lot of generator
-out there... and you can really industrialize the production of the intents to be
-applied to the very specific category or a population that needs more and more
-relevant mathematical knowledge.
+And if CSS is still not the right selection language for the stylesheets to be authored... 
+there's a lot of generator  out there: You can really industrialize the production of the CSS rules
+that will produce intents to be  applied to the very specific category or media.
 
 ---
 
 ## Now what?
 
 This little "what-if musing" was written to enrich the discussion in the Math community and working group.
+After a first [announce](https://lists.w3.org/Archives/Public/public-mathml4/2021May/0001.html), 
+David Farmer and Deyan Ginev commented which resulted to the introduction of a property prefix.

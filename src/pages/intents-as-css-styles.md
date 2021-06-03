@@ -87,7 +87,7 @@ Supposing that the following stylesheet can be written:
     mathintent-mo-mid: "$1 given $2";
   }
   .set {
-    mathintent-mo-mid: "$1 given $2";
+    mathintent-mo-mid: "$1 such that $2";
   }
 ```
 Note that `mid` is the name of the entity
@@ -149,7 +149,14 @@ intents' table (the one above really is for the English-speakers only).
 Accessibility devices that work with browsers don't get the CSS... That is a problem
 if operating on mandate of a browser that has loaded a static HTML page. However, CSS
 inheritance works rather well in most browsers and could, thus, be ported to attributes
-of the DOM by a JavaScript running in the browser before the accessibility device is addressed?
+of the DOM by a JavaScript running in the browser before the accessibility device is addressed.
+More concretely, the javascript piece would request all inherited properties on any given node
+and then apply, say, `mathintent-mo-mid: "$1 given $2"` on all children of `<mrow class="set">`
+which can become an explicit style attribute which the accessibility tool can then use.
+The idea is that such a style attribute is interpreted before the general table of default
+intents and it can _fire_ with more priority than it. This offers a way for authors to create
+context... and hopefully for authors of the table of default intents to take advantage of it
+to find more intents in different contexts (math domains, languages...).
 
 Changing stylesheet to adjust the purpose might be useful here too: Creating different stylesheets
 for different recipients and customising stylesheet because of one's stronger knowledge might

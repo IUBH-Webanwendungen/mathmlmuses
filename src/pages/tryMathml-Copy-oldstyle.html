@@ -1,0 +1,76 @@
+---
+title: "ClipOps 1"
+description: 'Trying to use clipboard operations (old style)'
+---
+<h3>Basic idea</h3>
+<p>Any text copied from this page (using the normal copy mechanism) is copied as capitalized plain text
+    (following <a href="https://www.sitepoint.com/clipboard-api/">here</a>) and with an extra flavour
+    of <a href="https://www.w3.org/TR/mathml-media-types/">MathML media type</a>
+    (a simple fraction in presentation MathML).</p>
+<p>Please look at the source code which has a script element showing the simple process.</p>
+
+<h3>Result</h3>
+<p>Expected: On some platforms and using some browsers
+    the clipboard flavour for MathML should appear so that desktop apps
+    could consume what was copied (e.g. from a web-page of a textbook).</p>
+
+<p>The obtained result is in the following pictures:</p>
+
+<p>Chromium 108:
+    <img src="../img/copied-mathml-oldstyle-chromium.png"></p>
+<p>Firefox 105:
+    <img src="../img/copied-mathml-oldstyle-firefox.png"></p>
+<p>Safari 15.6:
+    <img src="../img/copied-mathml-oldstyle-webkit.png"></p>
+
+<h3>Conclusion</h3>
+<p>It is hard to say if these private formats have a hope to be specified
+    or applicable.
+    Or if they're going to stay at all. Maybe this is the reason why
+    softwares such as Word prefer to do content-sniffing, detecting MathML
+    in the plain-text.</p>
+<p>I must say... this shows well that the current formula copy and paste
+    does not work well, as you can see in
+    <a href="https://www.w3.org/2022/09/TPAC/demos/mathml-formulae.html">this video</a>.</p>
+
+
+<script>
+  window.addEventListener("load", () => {
+
+    document.body.addEventListener('copy', copyHandler);
+
+// cut or copy event handler
+    async function copyHandler(e) {
+
+      const selection = document.getSelection();
+
+      // send uppercase text to clipboard
+      e.clipboardData.setData(
+          'text/plain',
+          selection.toString().toUpperCase()
+      );
+      e.clipboardData.setData('application/mathml+xml', '<math><mfrac><mn>3</mn><mn>5</mn></mfrac></math>');
+      //e.clipboardData.setData('text/html', '<math><mfrac><mn>3</mn><mn>5</mn></mfrac></math>');
+
+      // stop default cut/copy
+      e.preventDefault();
+    }
+  });
+
+
+  async function asyncCopy() {
+    try {
+      const blob = new Blob(['<math><mfrac><mn>3</mn><mn>5</mn></mfrac></math>'],{type: 'text/html'});
+      const blob2 = new Blob(['<math><mfrac><mn>3</mn><mn>5</mn></mfrac></math>'], {type: 'application/mathml+xml'})
+      const clipboardItem = new ClipboardItem({
+       ['web application/mathml+xml']:blob2,
+        ['text/html']: blob,
+        //['web application/mathml+xml']:'<math><mfrac><mn>3</mn><mn>5</mn></mfrac></math>',
+        //['web text/html']: '<math><mfrac><mn>3</mn><mn>5</mn></mfrac></math>'
+      })
+      await navigator.clipboard.write([clipboardItem]);
+    }  catch (e) {
+      console.warn(e);
+    }
+  }
+</script>

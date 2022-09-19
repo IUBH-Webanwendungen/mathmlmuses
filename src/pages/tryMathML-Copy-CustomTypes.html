@@ -1,0 +1,285 @@
+---
+title: "ClipOps 2"
+description: 'Trying to use clipboard operations (custom types)'
+---
+<h3>Idea</h3>
+<p>The current <a href="https://www.w3.org/TR/2021/WD-clipboard-apis-20210806/">Async clipboard APIs specification</a>
+    is out and allows,  after permission, JavaScript pages to invoke copy (write to clipboard)
+    or paste (read from clipboard) when they deem it useful. That is very nice
+    as users start to be aware that permissions is something they could give and trust.
+    As we are on the web, it means that what is copied remains <i>sanitized</i>:
+    a picture is rendered then re-serialized, HTML gets devoided of anything
+    slightly suspicious, the rest is removed.</p>
+
+<p>But what is more exciting is that custom types are coming: JavaScript in a page
+    can, for implementing browsers, specify content types that will get transmitted
+    for other apps or other web pages to use.</p>
+<p>A proposed specification <a href="https://github.com/w3c/clipboard-apis/blob/custom-format-spec/index.bs"
+    >pull-request</a> (an amendment) has been made that would allow the content-types
+    to be named with a prefix "web " (web followed by a space, this idea
+    of @annevk makes it impossible to parse a media type out of that) to be put
+    into the clipboard using the same operations.
+    Reveiving web-pages would look for the same pattern and are warned
+    that this is raw content: Depending on the processing, the content
+    must be sanitized (e.g. if put within a web-page, one should avoid
+    to transport trackers or candidate web page attacks).</p>
+
+<h3>Application</h3>
+<p>Here we have a small equation in MathML (from <a href="https://dlmf.nist.gov/14.13">here</a>)
+    and a button to copy it:</p>
+<p id="simpleExpression" style="text-align:center"><math xmlns="http://www.w3.org/1998/Math/MathML" displaystyle="true">
+    <mrow>
+        <mrow>
+            <mrow>
+                <msubsup>
+                    <mi mathvariant="sans-serif" title="Ferrers function of the first kind">P</mi>
+                    <mi title="general degree">&#x3BD;</mi>
+                    <mi title="general order">&#x3BC;</mi>
+                </msubsup>
+                <mo>&#x2061;</mo>
+                <mrow>
+                    <mo>(</mo>
+                    <mrow>
+                        <mi title="cosine function">cos</mi>
+                        <mo>&#x2061;</mo>
+                        <mi title="variable">&#x3B8;</mi>
+                    </mrow>
+                    <mo>)</mo>
+                </mrow>
+            </mrow>
+            <mo>=</mo>
+            <mrow>
+                <mfrac>
+                    <mrow>
+                        <msup>
+                            <mn>2</mn>
+                            <mrow>
+                                <mi title="general order">&#x3BC;</mi>
+                                <mo>+</mo>
+                                <mn>1</mn>
+                            </mrow>
+                        </msup>
+                        <mo>&#x2062;</mo>
+                        <msup>
+                            <mrow>
+                                <mo stretchy="false">(</mo>
+                                <mrow>
+                                    <mi title="sine function">sin</mi>
+                                    <mo>&#x2061;</mo>
+                                    <mi title="variable">&#x3B8;</mi>
+                                </mrow>
+                                <mo stretchy="false">)</mo>
+                            </mrow>
+                            <mi title="general order">&#x3BC;</mi>
+                        </msup>
+                    </mrow>
+                    <msup>
+                        <mi title="the ratio of the circumference of a circle to its diameter">&#x3C0;</mi>
+                        <mrow>
+                            <mn>1</mn>
+                            <mo>/</mo>
+                            <mn>2</mn>
+                        </mrow>
+                    </msup>
+                </mfrac>
+                <mo>&#x2062;</mo>
+                <mrow>
+                    <munderover>
+                        <mo largeop="true" movablelimits="false" symmetric="true">&#x2211;</mo>
+                        <mrow>
+                            <mi>k</mi>
+                            <mo>=</mo>
+                            <mn>0</mn>
+                        </mrow>
+                        <mi mathvariant="normal">&#x221E;</mi>
+                    </munderover>
+                    <mrow>
+                        <mfrac>
+                            <mrow>
+                                <mi mathvariant="normal" title="gamma function">&#x393;</mi>
+                                <mo>&#x2061;</mo>
+                                <mrow>
+                                    <mo>(</mo>
+                                    <mrow>
+                                        <mi title="general degree">&#x3BD;</mi>
+                                        <mo>+</mo>
+                                        <mi title="general order">&#x3BC;</mi>
+                                        <mo>+</mo>
+                                        <mi>k</mi>
+                                        <mo>+</mo>
+                                        <mn>1</mn>
+                                    </mrow>
+                                    <mo>)</mo>
+                                </mrow>
+                            </mrow>
+                            <mrow>
+                                <mi mathvariant="normal" title="gamma function">&#x393;</mi>
+                                <mo>&#x2061;</mo>
+                                <mrow>
+                                    <mo>(</mo>
+                                    <mrow>
+                                        <mi title="general degree">&#x3BD;</mi>
+                                        <mo>+</mo>
+                                        <mi>k</mi>
+                                        <mo>+</mo>
+                                        <mfrac>
+                                            <mn>3</mn>
+                                            <mn>2</mn>
+                                        </mfrac>
+                                    </mrow>
+                                    <mo>)</mo>
+                                </mrow>
+                            </mrow>
+                        </mfrac>
+                        <mo>&#x2062;</mo>
+                        <mfrac>
+                            <msub>
+                                <mrow>
+                                    <mo title="Pochhammer&#x2019;s symbol (or shifted factorial)">(</mo>
+                                    <mrow>
+                                        <mi title="general order">&#x3BC;</mi>
+                                        <mo>+</mo>
+                                        <mfrac>
+                                            <mn>1</mn>
+                                            <mn>2</mn>
+                                        </mfrac>
+                                    </mrow>
+                                    <mo title="Pochhammer&#x2019;s symbol (or shifted factorial)">)</mo>
+                                </mrow>
+                                <mi>k</mi>
+                            </msub>
+                            <mrow>
+                                <mi>k</mi>
+                                <mo title="factorial (as in ! n )">!</mo>
+                            </mrow>
+                        </mfrac>
+                        <mo>&#x2062;</mo>
+                        <mrow>
+                            <mi title="sine function">sin</mi>
+                            <mo>&#x2061;</mo>
+                            <mrow>
+                                <mo>(</mo>
+                                <mrow>
+                                    <mrow>
+                                        <mo stretchy="false">(</mo>
+                                        <mrow>
+                                            <mi title="general degree">&#x3BD;</mi>
+                                            <mo>+</mo>
+                                            <mi title="general order">&#x3BC;</mi>
+                                            <mo>+</mo>
+                                            <mrow>
+                                                <mn>2</mn>
+                                                <mo>&#x2062;</mo>
+                                                <mi>k</mi>
+                                            </mrow>
+                                            <mo>+</mo>
+                                            <mn>1</mn>
+                                        </mrow>
+                                        <mo stretchy="false">)</mo>
+                                    </mrow>
+                                    <mo>&#x2062;</mo>
+                                    <mi title="variable">&#x3B8;</mi>
+                                </mrow>
+                                <mo>)</mo>
+                            </mrow>
+                        </mrow>
+                    </mrow>
+                </mrow>
+            </mrow>
+        </mrow>
+    </mrow>
+</math>
+</p>
+<p><button id="asyncCopyButton" onclick="fadeButtonIn(); asyncCopy()">copy the expression</button></p>
+<p>Note that the copy only works on Blink-generation Chromium (or Edge)
+    from version 105 upwards. There, the MathML does only display if
+    you activate "Experimental Web Platform features" from the "chrome://flags/" URL!</p>
+<p>A you can see in the source, the copy button writes two blobs into the clipboard:</p>
+<ul>
+    <li><code>web application/mathml+xml</code> the generic type</li>
+    <li><code>web application/mathml-presentation+xml</code> the specific type for MathML-presentation</li>
+</ul>
+
+<h3>Result</h3>
+<p>Expected: On some platforms and using some browsers
+    the clipboard flavour for MathML should appear so that desktop apps
+    could consume what was copied (e.g. from a web-page of a textbook).
+    We're close to this.</p>
+
+<p>The obtained result on my macOS today (2022-09-16) is close to this:</p>
+<ul>
+    <li><code>com.web.custom.format0</code> containing our MathML source</li>
+    <li><code>com.web.custom.format1</code> containing it too</li>
+    <li><code>com.web.custom.format.map</code> containing a json record as follows:<br>
+        <i>{"application/mathml+xml":"com.web.custom.format0",<br>
+            "application/mathml-presentation+xml":"com.web.custom.format1"}</i></li>
+</ul>
+
+<h3>Conclusion</h3>
+<p>Web pages will be able to produce rich MathML content using JavaScript.
+    Most probably formula input-editors, formula enrichment or display systems
+    such as MathJax, web-sites with lots of formulæ such as DLMF or wikipedia
+    will all be able to take advantage of this.
+    That looks like a content that is ready to be used by desktop apps,
+    once they know that they have the proper sanitization in place.</p>
+
+<p>It also seems that desktop apps can produce this.
+    Well... it seems interoperable!</p>
+
+<p>I feel slightly unsafe on the permissions: Can it be that I forget that I allowed
+        access to clipboard? Probably the permissions won't last long.</p>
+
+<p>Optimistic note: Since the code in the page is doing the copy, it is also
+   responsible to support the selection of a portion of the expression to be copied. It is true
+   that this is not as declarative as simple markup but it will let page authors
+   get their say in the selection: e.g. extending a selection of a+b-c+5 from
+   "+b-" to "a+b+c".</p>
+
+<h3>Acknowledgement</h3>
+<p>Thanks @snianu for pushing and developing <a href="https://github.com/w3c/clipboard-apis/blob/custom-format-spec/index.bs">the custom types</a> spec,
+    for @tomayac for making
+    the <a href="https://developer.chrome.com/blog/web-custom-formats-for-the-async-clipboard-api/">helpful blog page</a> and demo at TPAC 2022,
+    for the project <a href="https://fugu-tracker.web.app/">Fugu's streamlining of APIs</a>
+    and for @garykac for keeping on track of the clipboard API spec.
+</p>
+
+<script>
+
+  async function asyncCopy() {
+    try {
+      const mml = document.getElementById("simpleExpression").innerHTML;
+      const blob = new Blob([mml],{type: 'application/mathml+xml'});
+      const blob2 = new Blob([mml],{type: 'application/mathml-presentation+xml'});
+      const clipboardItem = new ClipboardItem({
+        ['web ' + blob.type]:blob,
+        ['web ' + blob2.type]:blob2,
+      })
+      await navigator.clipboard.write([clipboardItem]);
+    }  catch (e) {
+      console.warn(e);
+    }
+  }
+
+  function fadeButtonIn() {
+    const elt = document.getElementById("asyncCopyButton")
+    let step = 0, max = 20;
+    let colorize = () => {
+      step++;
+      if(step<10) color = 10*step;
+      else color = 10-(step-10)*10;
+      console.log("color " + color)
+      elt.style.backgroundColor = "rgb(" + color + "," + color + "," + color + "," + color + ")"
+      if(step<=max) window.setTimeout(colorize,100)
+    }
+    window.setTimeout(colorize, 100)
+  }
+
+  window.addEventListener("load", () => {
+    const elt = document.getElementById("asyncCopyButton")
+    if (typeof(navigator.clipboard.write)=="undefined") {
+      elt.setAttribute("disabled", "true")
+      elt.innerText = " -- function navigator.clipboard.write not found -- "
+    }
+
+  })
+</script>
